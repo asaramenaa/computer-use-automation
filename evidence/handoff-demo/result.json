@@ -1,0 +1,30 @@
+{
+  "status": "SUCCESS",
+  "run_id": "handoff-demo",
+  "capability_id": "member_savings_balance_lookup",
+  "version": "1.0.0",
+  "started_at": "2026-09-18T13:09:04.374445Z",
+  "finished_at": "2026-09-18T13:12:57.438263Z",
+  "steps_completed": 7,
+  "outputs": {
+    "savings_balance": 1250.75
+  },
+  "outcome": null,
+  "failure": null,
+  "escalation": null,
+  "recoveries_applied": [
+    {
+      "recovery_id": "r03",
+      "step_id": "s04",
+      "attempt": 1,
+      "trigger": "Transient HTTP 500; retry from the last verified state"
+    },
+    {
+      "recovery_id": "r03",
+      "step_id": "s04",
+      "attempt": 2,
+      "trigger": "Transient HTTP 500; retry from the last verified state"
+    }
+  ],
+  "evidence_dir": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/handoff-demo"
+}

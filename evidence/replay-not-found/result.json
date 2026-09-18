@@ -1,0 +1,19 @@
+{
+  "status": "BUSINESS_OUTCOME",
+  "run_id": "replay-not-found",
+  "capability_id": "member_savings_balance_lookup",
+  "version": "1.0.0",
+  "started_at": "2026-09-18T09:09:59.248904Z",
+  "finished_at": "2026-09-18T09:09:59.669391Z",
+  "steps_completed": 5,
+  "outputs": {},
+  "outcome": {
+    "code": "MEMBER_NOT_FOUND",
+    "description": "No member matches the supplied member number.",
+    "step_id": "s06"
+  },
+  "failure": null,
+  "escalation": null,
+  "recoveries_applied": [],
+  "evidence_dir": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-not-found"
+}

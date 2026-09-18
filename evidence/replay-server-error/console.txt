@@ -1,0 +1,39 @@
+run replay-server-error: replaying member_savings_balance_lookup@1.0.0 params={'member_id': '10023'}  log=/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-server-error/events.jsonl
+{
+  "status": "FAILED",
+  "run_id": "replay-server-error",
+  "capability_id": "member_savings_balance_lookup",
+  "version": "1.0.0",
+  "started_at": "2026-09-18T09:26:38.907978Z",
+  "finished_at": "2026-09-18T10:10:14.792614Z",
+  "steps_completed": 3,
+  "outputs": {},
+  "outcome": null,
+  "failure": {
+    "step_id": "s04",
+    "step_label": "Click 'Sign On'",
+    "expected": "recovery r03 (Transient HTTP 500; retry from the last verified state) within 2 attempts",
+    "observed": "trigger still present after 2 attempts: url=http://127.0.0.1:5055/; nav: MENU Member Search Sign On Sign Off | main: HTTP 500 - Internal Server Error An unexpected application error occurred while processing your request. Reference: ERR-198313 Contact the help desk and quote the reference above.",
+    "evidence": {
+      "screenshot": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-server-error/evidence/001_s04_hard_failure.png",
+      "a11y_snapshot": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-server-error/evidence/001_s04_hard_failure.a11y.txt",
+      "log": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-server-error/events.jsonl"
+    }
+  },
+  "escalation": null,
+  "recoveries_applied": [
+    {
+      "recovery_id": "r03",
+      "step_id": "s04",
+      "attempt": 1,
+      "trigger": "Transient HTTP 500; retry from the last verified state"
+    },
+    {
+      "recovery_id": "r03",
+      "step_id": "s04",
+      "attempt": 2,
+      "trigger": "Transient HTTP 500; retry from the last verified state"
+    }
+  ],
+  "evidence_dir": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-server-error"
+}

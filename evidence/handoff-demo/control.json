@@ -1,0 +1,14 @@
+{
+  "run_id": "handoff-demo",
+  "holder": "automation",
+  "state": "AUTOMATION",
+  "version": 4,
+  "since": "2026-09-18T13:12:57.215440+00:00",
+  "intervention_id": "int-d9dde425",
+  "resume": {
+    "decision": "resumed",
+    "note": "cleared the outage and reached the profile manually",
+    "by": "amena",
+    "at": "2026-09-18T13:12:57.207928+00:00"
+  }
+}

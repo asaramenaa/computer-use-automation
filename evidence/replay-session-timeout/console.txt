@@ -1,0 +1,25 @@
+run replay-session-timeout: replaying member_savings_balance_lookup@1.0.0 params={'member_id': '10023'}  log=/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-session-timeout/events.jsonl
+{
+  "status": "SUCCESS",
+  "run_id": "replay-session-timeout",
+  "capability_id": "member_savings_balance_lookup",
+  "version": "1.0.0",
+  "started_at": "2026-09-18T09:10:00.355177Z",
+  "finished_at": "2026-09-18T09:10:00.961712Z",
+  "steps_completed": 7,
+  "outputs": {
+    "savings_balance": 1250.75
+  },
+  "outcome": null,
+  "failure": null,
+  "escalation": null,
+  "recoveries_applied": [
+    {
+      "recovery_id": "r02",
+      "step_id": "s04",
+      "attempt": 1,
+      "trigger": "Session expired (SEC-440); sign on again and continue"
+    }
+  ],
+  "evidence_dir": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-session-timeout"
+}

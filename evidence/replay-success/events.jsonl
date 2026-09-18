@@ -1,0 +1,36 @@
+{"ts": "2026-09-18T09:09:58.010136+00:00", "run_id": "replay-success", "seq": 1, "event": "replay_started", "capability_id": "member_savings_balance_lookup", "version": "1.0.0", "params": {"member_id": "10047"}, "entry_url": "http://127.0.0.1:5055/"}
+{"ts": "2026-09-18T09:09:58.010552+00:00", "run_id": "replay-success", "seq": 2, "event": "step_started", "step_id": "s01", "label": "Open the application", "action": "navigate", "risk": "reversible"}
+{"ts": "2026-09-18T09:09:58.048200+00:00", "run_id": "replay-success", "seq": 3, "event": "acted", "step_id": "s01", "action": "navigate", "value": "http://127.0.0.1:5055/"}
+{"ts": "2026-09-18T09:09:58.116716+00:00", "run_id": "replay-success", "seq": 4, "event": "step_classified", "step_id": "s01", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:09:58.116795+00:00", "run_id": "replay-success", "seq": 5, "event": "step_completed", "step_id": "s01"}
+{"ts": "2026-09-18T09:09:58.116824+00:00", "run_id": "replay-success", "seq": 6, "event": "step_started", "step_id": "s02", "label": "Enter value in 'User ID'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:09:58.150641+00:00", "run_id": "replay-success", "seq": 7, "event": "target_resolved", "step_id": "s02", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:User ID"}
+{"ts": "2026-09-18T09:09:58.177668+00:00", "run_id": "replay-success", "seq": 8, "event": "acted", "step_id": "s02", "action": "type", "value": "[secret]"}
+{"ts": "2026-09-18T09:09:58.188959+00:00", "run_id": "replay-success", "seq": 9, "event": "step_classified", "step_id": "s02", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:09:58.189027+00:00", "run_id": "replay-success", "seq": 10, "event": "step_completed", "step_id": "s02"}
+{"ts": "2026-09-18T09:09:58.189054+00:00", "run_id": "replay-success", "seq": 11, "event": "step_started", "step_id": "s03", "label": "Enter value in 'Password'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:09:58.191703+00:00", "run_id": "replay-success", "seq": 12, "event": "target_resolved", "step_id": "s03", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:Password"}
+{"ts": "2026-09-18T09:09:58.233781+00:00", "run_id": "replay-success", "seq": 13, "event": "acted", "step_id": "s03", "action": "type", "value": "[secret]"}
+{"ts": "2026-09-18T09:09:58.245525+00:00", "run_id": "replay-success", "seq": 14, "event": "step_classified", "step_id": "s03", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:09:58.245587+00:00", "run_id": "replay-success", "seq": 15, "event": "step_completed", "step_id": "s03"}
+{"ts": "2026-09-18T09:09:58.245615+00:00", "run_id": "replay-success", "seq": 16, "event": "step_started", "step_id": "s04", "label": "Click 'Sign On'", "action": "click", "risk": "reversible"}
+{"ts": "2026-09-18T09:09:58.248287+00:00", "run_id": "replay-success", "seq": 17, "event": "target_resolved", "step_id": "s04", "strategy": "role_name", "frame": "main", "target": "role_name:button:Sign On"}
+{"ts": "2026-09-18T09:09:58.314609+00:00", "run_id": "replay-success", "seq": 18, "event": "acted", "step_id": "s04", "action": "click", "value": null}
+{"ts": "2026-09-18T09:09:58.348014+00:00", "run_id": "replay-success", "seq": 19, "event": "step_classified", "step_id": "s04", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:09:58.349986+00:00", "run_id": "replay-success", "seq": 20, "event": "step_completed", "step_id": "s04"}
+{"ts": "2026-09-18T09:09:58.350019+00:00", "run_id": "replay-success", "seq": 21, "event": "step_started", "step_id": "s05", "label": "Enter value in 'Member Number'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:09:58.359673+00:00", "run_id": "replay-success", "seq": 22, "event": "target_resolved", "step_id": "s05", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:Member Number"}
+{"ts": "2026-09-18T09:09:58.364042+00:00", "run_id": "replay-success", "seq": 23, "event": "acted", "step_id": "s05", "action": "type", "value": "10047"}
+{"ts": "2026-09-18T09:09:58.374702+00:00", "run_id": "replay-success", "seq": 24, "event": "step_classified", "step_id": "s05", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:09:58.374753+00:00", "run_id": "replay-success", "seq": 25, "event": "step_completed", "step_id": "s05"}
+{"ts": "2026-09-18T09:09:58.374778+00:00", "run_id": "replay-success", "seq": 26, "event": "step_started", "step_id": "s06", "label": "Click 'Search'", "action": "click", "risk": "reversible"}
+{"ts": "2026-09-18T09:09:58.375972+00:00", "run_id": "replay-success", "seq": 27, "event": "target_resolved", "step_id": "s06", "strategy": "role_name", "frame": "main", "target": "role_name:button:Search"}
+{"ts": "2026-09-18T09:09:58.412675+00:00", "run_id": "replay-success", "seq": 28, "event": "acted", "step_id": "s06", "action": "click", "value": null}
+{"ts": "2026-09-18T09:09:58.552529+00:00", "run_id": "replay-success", "seq": 29, "event": "step_classified", "step_id": "s06", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:09:58.552603+00:00", "run_id": "replay-success", "seq": 30, "event": "step_completed", "step_id": "s06"}
+{"ts": "2026-09-18T09:09:58.552634+00:00", "run_id": "replay-success", "seq": 31, "event": "step_started", "step_id": "s07", "label": "Read savings_balance", "action": "extract", "risk": "read"}
+{"ts": "2026-09-18T09:09:58.556119+00:00", "run_id": "replay-success", "seq": 32, "event": "extracted", "step_id": "s07", "output": "savings_balance", "value": 9800.0}
+{"ts": "2026-09-18T09:09:58.566467+00:00", "run_id": "replay-success", "seq": 33, "event": "step_classified", "step_id": "s07", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:09:58.567023+00:00", "run_id": "replay-success", "seq": 34, "event": "checkpoint", "checkpoint_id": "cp01", "step_id": "s07", "ok": true, "description": "Goal state reached: 'Member Profile' visible after click"}
+{"ts": "2026-09-18T09:09:58.567073+00:00", "run_id": "replay-success", "seq": 35, "event": "step_completed", "step_id": "s07"}
+{"ts": "2026-09-18T09:09:58.567185+00:00", "run_id": "replay-success", "seq": 36, "event": "replay_finished", "status": "SUCCESS", "steps_completed": 7, "outputs": {"savings_balance": 9800.0}, "outcome": null}

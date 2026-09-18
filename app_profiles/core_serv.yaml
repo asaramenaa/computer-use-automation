@@ -1,0 +1,45 @@
+# Product-level knowledge shared by every tenant running this vendor product.
+# The recorder merges these into every artifact recorded against the product, so
+# a discovery run (which only sees the happy path) still ships with the runtime
+# conditions that matter. Tenants override by supplying their own profile.
+vendor: FictionalVendor
+product: CORE-SERV Teller Platform
+version: "7.2"
+outcome_detectors:
+  - code: MEMBER_NOT_FOUND
+    description: No member matches the supplied member number.
+    condition: {kind: text_present, text: "No member found"}
+  - code: PERMISSION_DENIED
+    description: The operator role does not permit this operation (SEC-403).
+    condition: {kind: text_present, text: "SEC-403"}
+  - code: VALIDATION_ERROR
+    description: The application rejected the submitted form values.
+    condition: {kind: text_present, text: "ERROR:"}
+  - code: INVALID_CREDENTIALS
+    description: Sign-on was rejected (SEC-401); the configured credentials are wrong.
+    condition: {kind: text_present, text: "SEC-401"}
+recoveries:
+  - id: r01
+    description: Dismiss the maintenance system notice overlay
+    trigger: {kind: text_present, text: "SYSTEM NOTICE"}
+    action: dismiss
+    locators:
+      - {strategy: role_name, frame: $work, role: button, name: Continue, rationale: "The overlay's only control; name is stable product chrome."}
+    max_attempts: 2
+  - id: r02
+    description: Session expired (SEC-440); sign on again and continue
+    trigger: {kind: text_present, text: "SEC-440"}
+    action: reauth
+    goto_step: $entry
+    max_attempts: 1
+  - id: r03
+    description: Transient HTTP 500; retry from the last verified state
+    trigger: {kind: text_present, text: "HTTP 500"}
+    action: retry
+    max_attempts: 2
+    backoff_ms: 1500
+  - id: r04
+    description: Accept the product's unsaved-changes confirm dialog
+    trigger: {kind: dialog_open, pattern: "Unsaved changes"}
+    action: accept_dialog
+    max_attempts: 3

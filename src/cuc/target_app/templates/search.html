@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block body %}
+<form method="post" action="/members/search">
+<table border="1" cellpadding="4" cellspacing="0" width="460" bgcolor="#ffffff">
+<tr><td colspan="3" bgcolor="#dde4ee"><b>Member Search</b></td></tr>
+{% if not_found %}<tr><td colspan="3"><font color="#cc0000"><b>No member found matching member number {{ not_found }}.</b></font></td></tr>{% endif %}
+<tr><td width="140">Member Number</td><td><input type="text" name="member_number" size="16"></td><td><input type="submit" value="Search"></td></tr>
+<tr><td colspan="3"><font size="1">Enter the numeric member number exactly as printed on the member card.</font></td></tr>
+</table>
+</form>
+{% endblock %}

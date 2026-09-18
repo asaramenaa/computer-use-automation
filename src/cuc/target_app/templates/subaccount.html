@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block body %}
+<form method="post" action="/members/{{ member.number }}/subaccount">
+<table border="1" cellpadding="4" cellspacing="0" width="520" bgcolor="#ffffff">
+<tr><td colspan="2" bgcolor="#dde4ee"><b>Open Sub-Account &mdash; Member {{ member.number }} ({{ member.name }})</b></td></tr>
+{% for e in errors %}<tr><td colspan="2"><font color="#cc0000"><b>ERROR: {{ e }}</b></font></td></tr>{% endfor %}
+<tr><td width="140">Product Type</td><td>
+  <select name="product">{% for code, label in products %}<option value="{{ code }}"{% if form.product == code %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+</td></tr>
+<tr><td>Nickname</td><td><input type="text" name="nickname" size="24" value="{{ form.nickname }}"></td></tr>
+<tr><td>Initial Deposit</td><td><input type="text" name="deposit" size="12" value="{{ form.deposit }}"></td></tr>
+<tr><td colspan="2" align="right"><a href="/members/{{ member.number }}">Cancel</a>&nbsp;&nbsp;<input type="submit" value="Open Account"></td></tr>
+</table>
+</form>
+{% endblock %}

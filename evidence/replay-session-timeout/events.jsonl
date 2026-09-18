@@ -1,0 +1,55 @@
+{"ts": "2026-09-18T09:10:00.355433+00:00", "run_id": "replay-session-timeout", "seq": 1, "event": "replay_started", "capability_id": "member_savings_balance_lookup", "version": "1.0.0", "params": {"member_id": "10023"}, "entry_url": "http://127.0.0.1:5055/"}
+{"ts": "2026-09-18T09:10:00.355793+00:00", "run_id": "replay-session-timeout", "seq": 2, "event": "step_started", "step_id": "s01", "label": "Open the application", "action": "navigate", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.371713+00:00", "run_id": "replay-session-timeout", "seq": 3, "event": "acted", "step_id": "s01", "action": "navigate", "value": "http://127.0.0.1:5055/"}
+{"ts": "2026-09-18T09:10:00.412078+00:00", "run_id": "replay-session-timeout", "seq": 4, "event": "step_classified", "step_id": "s01", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.412178+00:00", "run_id": "replay-session-timeout", "seq": 5, "event": "step_completed", "step_id": "s01"}
+{"ts": "2026-09-18T09:10:00.412212+00:00", "run_id": "replay-session-timeout", "seq": 6, "event": "step_started", "step_id": "s02", "label": "Enter value in 'User ID'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.434480+00:00", "run_id": "replay-session-timeout", "seq": 7, "event": "target_resolved", "step_id": "s02", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:User ID"}
+{"ts": "2026-09-18T09:10:00.449477+00:00", "run_id": "replay-session-timeout", "seq": 8, "event": "acted", "step_id": "s02", "action": "type", "value": "[secret]"}
+{"ts": "2026-09-18T09:10:00.461003+00:00", "run_id": "replay-session-timeout", "seq": 9, "event": "step_classified", "step_id": "s02", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.461059+00:00", "run_id": "replay-session-timeout", "seq": 10, "event": "step_completed", "step_id": "s02"}
+{"ts": "2026-09-18T09:10:00.461087+00:00", "run_id": "replay-session-timeout", "seq": 11, "event": "step_started", "step_id": "s03", "label": "Enter value in 'Password'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.463671+00:00", "run_id": "replay-session-timeout", "seq": 12, "event": "target_resolved", "step_id": "s03", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:Password"}
+{"ts": "2026-09-18T09:10:00.499979+00:00", "run_id": "replay-session-timeout", "seq": 13, "event": "acted", "step_id": "s03", "action": "type", "value": "[secret]"}
+{"ts": "2026-09-18T09:10:00.513190+00:00", "run_id": "replay-session-timeout", "seq": 14, "event": "step_classified", "step_id": "s03", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.513257+00:00", "run_id": "replay-session-timeout", "seq": 15, "event": "step_completed", "step_id": "s03"}
+{"ts": "2026-09-18T09:10:00.513285+00:00", "run_id": "replay-session-timeout", "seq": 16, "event": "step_started", "step_id": "s04", "label": "Click 'Sign On'", "action": "click", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.515894+00:00", "run_id": "replay-session-timeout", "seq": 17, "event": "target_resolved", "step_id": "s04", "strategy": "role_name", "frame": "main", "target": "role_name:button:Sign On"}
+{"ts": "2026-09-18T09:10:00.567275+00:00", "run_id": "replay-session-timeout", "seq": 18, "event": "acted", "step_id": "s04", "action": "click", "value": null}
+{"ts": "2026-09-18T09:10:00.594089+00:00", "run_id": "replay-session-timeout", "seq": 19, "event": "step_classified", "step_id": "s04", "classification": "recoverable", "outcome": null, "recovery": "r02", "dialogs": []}
+{"ts": "2026-09-18T09:10:00.594228+00:00", "run_id": "replay-session-timeout", "seq": 20, "event": "recovery_applied", "recovery_id": "r02", "action": "reauth", "step_id": "s04", "attempt": 1}
+{"ts": "2026-09-18T09:10:00.594275+00:00", "run_id": "replay-session-timeout", "seq": 21, "event": "step_started", "step_id": "s01", "label": "Open the application", "action": "navigate", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.606872+00:00", "run_id": "replay-session-timeout", "seq": 22, "event": "acted", "step_id": "s01", "action": "navigate", "value": "http://127.0.0.1:5055/"}
+{"ts": "2026-09-18T09:10:00.637110+00:00", "run_id": "replay-session-timeout", "seq": 23, "event": "step_classified", "step_id": "s01", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.637183+00:00", "run_id": "replay-session-timeout", "seq": 24, "event": "step_completed", "step_id": "s01"}
+{"ts": "2026-09-18T09:10:00.637213+00:00", "run_id": "replay-session-timeout", "seq": 25, "event": "step_started", "step_id": "s02", "label": "Enter value in 'User ID'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.651936+00:00", "run_id": "replay-session-timeout", "seq": 26, "event": "target_resolved", "step_id": "s02", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:User ID"}
+{"ts": "2026-09-18T09:10:00.656618+00:00", "run_id": "replay-session-timeout", "seq": 27, "event": "acted", "step_id": "s02", "action": "type", "value": "[secret]"}
+{"ts": "2026-09-18T09:10:00.667040+00:00", "run_id": "replay-session-timeout", "seq": 28, "event": "step_classified", "step_id": "s02", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.667085+00:00", "run_id": "replay-session-timeout", "seq": 29, "event": "step_completed", "step_id": "s02"}
+{"ts": "2026-09-18T09:10:00.667110+00:00", "run_id": "replay-session-timeout", "seq": 30, "event": "step_started", "step_id": "s03", "label": "Enter value in 'Password'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.669462+00:00", "run_id": "replay-session-timeout", "seq": 31, "event": "target_resolved", "step_id": "s03", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:Password"}
+{"ts": "2026-09-18T09:10:00.674045+00:00", "run_id": "replay-session-timeout", "seq": 32, "event": "acted", "step_id": "s03", "action": "type", "value": "[secret]"}
+{"ts": "2026-09-18T09:10:00.684790+00:00", "run_id": "replay-session-timeout", "seq": 33, "event": "step_classified", "step_id": "s03", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.684836+00:00", "run_id": "replay-session-timeout", "seq": 34, "event": "step_completed", "step_id": "s03"}
+{"ts": "2026-09-18T09:10:00.684864+00:00", "run_id": "replay-session-timeout", "seq": 35, "event": "step_started", "step_id": "s04", "label": "Click 'Sign On'", "action": "click", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.687074+00:00", "run_id": "replay-session-timeout", "seq": 36, "event": "target_resolved", "step_id": "s04", "strategy": "role_name", "frame": "main", "target": "role_name:button:Sign On"}
+{"ts": "2026-09-18T09:10:00.734238+00:00", "run_id": "replay-session-timeout", "seq": 37, "event": "acted", "step_id": "s04", "action": "click", "value": null}
+{"ts": "2026-09-18T09:10:00.761909+00:00", "run_id": "replay-session-timeout", "seq": 38, "event": "step_classified", "step_id": "s04", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.761991+00:00", "run_id": "replay-session-timeout", "seq": 39, "event": "step_completed", "step_id": "s04"}
+{"ts": "2026-09-18T09:10:00.762020+00:00", "run_id": "replay-session-timeout", "seq": 40, "event": "step_started", "step_id": "s05", "label": "Enter value in 'Member Number'", "action": "type", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.771084+00:00", "run_id": "replay-session-timeout", "seq": 41, "event": "target_resolved", "step_id": "s05", "strategy": "anchor", "frame": "main", "target": "anchor:textbox:Member Number"}
+{"ts": "2026-09-18T09:10:00.774981+00:00", "run_id": "replay-session-timeout", "seq": 42, "event": "acted", "step_id": "s05", "action": "type", "value": "10023"}
+{"ts": "2026-09-18T09:10:00.785664+00:00", "run_id": "replay-session-timeout", "seq": 43, "event": "step_classified", "step_id": "s05", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.785710+00:00", "run_id": "replay-session-timeout", "seq": 44, "event": "step_completed", "step_id": "s05"}
+{"ts": "2026-09-18T09:10:00.785749+00:00", "run_id": "replay-session-timeout", "seq": 45, "event": "step_started", "step_id": "s06", "label": "Click 'Search'", "action": "click", "risk": "reversible"}
+{"ts": "2026-09-18T09:10:00.786836+00:00", "run_id": "replay-session-timeout", "seq": 46, "event": "target_resolved", "step_id": "s06", "strategy": "role_name", "frame": "main", "target": "role_name:button:Search"}
+{"ts": "2026-09-18T09:10:00.811147+00:00", "run_id": "replay-session-timeout", "seq": 47, "event": "acted", "step_id": "s06", "action": "click", "value": null}
+{"ts": "2026-09-18T09:10:00.947868+00:00", "run_id": "replay-session-timeout", "seq": 48, "event": "step_classified", "step_id": "s06", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.947962+00:00", "run_id": "replay-session-timeout", "seq": 49, "event": "step_completed", "step_id": "s06"}
+{"ts": "2026-09-18T09:10:00.947993+00:00", "run_id": "replay-session-timeout", "seq": 50, "event": "step_started", "step_id": "s07", "label": "Read savings_balance", "action": "extract", "risk": "read"}
+{"ts": "2026-09-18T09:10:00.950408+00:00", "run_id": "replay-session-timeout", "seq": 51, "event": "extracted", "step_id": "s07", "output": "savings_balance", "value": 1250.75}
+{"ts": "2026-09-18T09:10:00.961092+00:00", "run_id": "replay-session-timeout", "seq": 52, "event": "step_classified", "step_id": "s07", "classification": "ok", "outcome": null, "recovery": null, "dialogs": []}
+{"ts": "2026-09-18T09:10:00.961630+00:00", "run_id": "replay-session-timeout", "seq": 53, "event": "checkpoint", "checkpoint_id": "cp01", "step_id": "s07", "ok": true, "description": "Goal state reached: 'Member Profile' visible after click"}
+{"ts": "2026-09-18T09:10:00.961675+00:00", "run_id": "replay-session-timeout", "seq": 54, "event": "step_completed", "step_id": "s07"}
+{"ts": "2026-09-18T09:10:00.961775+00:00", "run_id": "replay-session-timeout", "seq": 55, "event": "replay_finished", "status": "SUCCESS", "steps_completed": 7, "outputs": {"savings_balance": 1250.75}, "outcome": null}

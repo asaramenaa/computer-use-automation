@@ -1,0 +1,930 @@
+{
+  "$defs": {
+    "ActionType": {
+      "enum": [
+        "navigate",
+        "click",
+        "type",
+        "select",
+        "press",
+        "extract"
+      ],
+      "title": "ActionType",
+      "type": "string"
+    },
+    "AppIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "entry_url": {
+          "description": "Entry point. Origin may differ per tenant; replay validates it against policy.",
+          "title": "Entry Url",
+          "type": "string"
+        },
+        "product": {
+          "title": "Product",
+          "type": "string"
+        },
+        "tenant": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "None for a base artifact shared across tenants of this product.",
+          "title": "Tenant"
+        },
+        "vendor": {
+          "title": "Vendor",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vendor",
+        "product",
+        "version",
+        "entry_url"
+      ],
+      "title": "AppIdentity",
+      "type": "object"
+    },
+    "Checkpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "after_step": {
+          "title": "After Step",
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "#/$defs/Condition"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^cp\\d{2}$",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "after_step",
+        "condition"
+      ],
+      "title": "Checkpoint",
+      "type": "object"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "frame": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frame"
+        },
+        "kind": {
+          "$ref": "#/$defs/ConditionKind"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Locator"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For ELEMENT_*."
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Regex for URL_MATCHES / DIALOG_OPEN.",
+          "title": "Pattern"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Substring for TEXT_* (case-insensitive).",
+          "title": "Text"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "ConditionKind": {
+      "enum": [
+        "text_present",
+        "text_absent",
+        "url_matches",
+        "element_present",
+        "element_absent",
+        "dialog_open"
+      ],
+      "title": "ConditionKind",
+      "type": "string"
+    },
+    "ExtractSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "column_header": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Column Header"
+        },
+        "frame": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frame"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Locator"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "output": {
+          "title": "Output",
+          "type": "string"
+        },
+        "parse": {
+          "default": "string",
+          "enum": [
+            "string",
+            "money",
+            "integer",
+            "number"
+          ],
+          "title": "Parse",
+          "type": "string"
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL_REGEX: first capture group is the value.",
+          "title": "Pattern"
+        },
+        "row_anchor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Row Anchor"
+        },
+        "strategy": {
+          "$ref": "#/$defs/ExtractStrategy"
+        }
+      },
+      "required": [
+        "output",
+        "strategy"
+      ],
+      "title": "ExtractSpec",
+      "type": "object"
+    },
+    "ExtractStrategy": {
+      "enum": [
+        "table_cell",
+        "label_value",
+        "element_text",
+        "url_regex"
+      ],
+      "title": "ExtractStrategy",
+      "type": "string"
+    },
+    "InputParam": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "example": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Example"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Regex the value must match before replay starts.",
+          "title": "Pattern"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "sensitive": {
+          "default": false,
+          "description": "If true the caller passes 'secret:<ENV_NAME>' and the value is never logged or serialized.",
+          "title": "Sensitive",
+          "type": "boolean"
+        },
+        "type": {
+          "default": "string",
+          "enum": [
+            "string",
+            "integer",
+            "number",
+            "boolean"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "InputParam",
+      "type": "object"
+    },
+    "Locator": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ANCHOR: visible text (e.g. a label cell) the control sits after.",
+          "title": "Anchor Text"
+        },
+        "exact": {
+          "default": true,
+          "title": "Exact",
+          "type": "boolean"
+        },
+        "frame": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Frame name path from the top document, e.g. 'main' or 'outer/inner'. None = top document.",
+          "title": "Frame"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Accessible name for ROLE_NAME.",
+          "title": "Name"
+        },
+        "rationale": {
+          "description": "Why this locator is believed robust, for reviewers.",
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ARIA/accessibility role (button, link, textbox, combobox, cell...).",
+          "title": "Role"
+        },
+        "strategy": {
+          "$ref": "#/$defs/LocatorStrategy"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "TEXT: visible text of the control itself.",
+          "title": "Text"
+        },
+        "viewport": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "COORDINATES: viewport size at recording.",
+          "title": "Viewport"
+        },
+        "x": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "COORDINATES: x in frame viewport pixels at recording.",
+          "title": "X"
+        },
+        "y": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Y"
+        }
+      },
+      "required": [
+        "strategy",
+        "rationale"
+      ],
+      "title": "Locator",
+      "type": "object"
+    },
+    "LocatorStrategy": {
+      "enum": [
+        "role_name",
+        "anchor",
+        "text",
+        "coordinates"
+      ],
+      "title": "LocatorStrategy",
+      "type": "string"
+    },
+    "OutcomeDetector": {
+      "additionalProperties": false,
+      "description": "A legitimate business result the caller must be told about. Terminal for the run.",
+      "properties": {
+        "after_steps": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Only evaluated after these steps; None = after any step.",
+          "title": "After Steps"
+        },
+        "code": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,63}$",
+          "title": "Code",
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "#/$defs/Condition"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "description",
+        "condition"
+      ],
+      "title": "OutcomeDetector",
+      "type": "object"
+    },
+    "OutputField": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hint for callers, e.g. 'money_usd'.",
+          "title": "Format"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "default": "string",
+          "enum": [
+            "string",
+            "integer",
+            "number",
+            "boolean"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "OutputField",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "discovery_steps": {
+          "minimum": 1,
+          "title": "Discovery Steps",
+          "type": "integer"
+        },
+        "goal": {
+          "description": "The natural-language goal, redacted.",
+          "title": "Goal",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "surface": {
+          "default": "playwright-chromium",
+          "title": "Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recorded_at",
+        "model",
+        "run_id",
+        "goal",
+        "discovery_steps"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Recovery": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/RecoveryAction"
+        },
+        "backoff_ms": {
+          "default": 1000,
+          "maximum": 30000,
+          "minimum": 0,
+          "title": "Backoff Ms",
+          "type": "integer"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "goto_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Goto Step"
+        },
+        "id": {
+          "pattern": "^r\\d{2}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "locators": {
+          "items": {
+            "$ref": "#/$defs/Locator"
+          },
+          "title": "Locators",
+          "type": "array"
+        },
+        "max_attempts": {
+          "default": 1,
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "trigger": {
+          "$ref": "#/$defs/Condition"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "trigger",
+        "action"
+      ],
+      "title": "Recovery",
+      "type": "object"
+    },
+    "RecoveryAction": {
+      "enum": [
+        "dismiss",
+        "accept_dialog",
+        "retry",
+        "reauth"
+      ],
+      "title": "RecoveryAction",
+      "type": "string"
+    },
+    "RiskClass": {
+      "enum": [
+        "read",
+        "reversible",
+        "irreversible"
+      ],
+      "title": "RiskClass",
+      "type": "string"
+    },
+    "Step": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/ActionType"
+        },
+        "extract": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExtractSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "pattern": "^s\\d{2,3}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "Human-readable intent, e.g. 'Enter member number'.",
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "locators": {
+          "description": "Ordered by preference; replay stops at the first unambiguous hit.",
+          "items": {
+            "$ref": "#/$defs/Locator"
+          },
+          "title": "Locators",
+          "type": "array"
+        },
+        "notes": {
+          "default": "",
+          "description": "Discovery-time reasoning kept for reviewers. Never the transcript.",
+          "title": "Notes",
+          "type": "string"
+        },
+        "postcondition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Condition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Must hold after acting, else hard failure (unless a detector claims the state)."
+        },
+        "precondition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Condition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Must hold before acting; re-verified after a human handoff."
+        },
+        "risk_class": {
+          "$ref": "#/$defs/RiskClass",
+          "default": "reversible"
+        },
+        "timeout_ms": {
+          "default": 10000,
+          "maximum": 120000,
+          "minimum": 100,
+          "title": "Timeout Ms",
+          "type": "integer"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValueRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "action"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "ValueRef": {
+      "additionalProperties": false,
+      "description": "Where a typed/selected/navigated value comes from at replay time.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "literal",
+            "param",
+            "secret"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "param: input name. secret: environment variable name, resolved at act time, never logged.",
+          "title": "Name"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "literal: the constant; template form allows {param} placeholders.",
+          "title": "Value"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ValueRef",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "app": {
+      "$ref": "#/$defs/AppIdentity"
+    },
+    "capability_id": {
+      "pattern": "^[a-z][a-z0-9_]{2,63}$",
+      "title": "Capability Id",
+      "type": "string"
+    },
+    "checkpoints": {
+      "items": {
+        "$ref": "#/$defs/Checkpoint"
+      },
+      "minItems": 1,
+      "title": "Checkpoints",
+      "type": "array"
+    },
+    "description": {
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/InputParam"
+      },
+      "title": "Inputs",
+      "type": "array"
+    },
+    "outcome_detectors": {
+      "items": {
+        "$ref": "#/$defs/OutcomeDetector"
+      },
+      "title": "Outcome Detectors",
+      "type": "array"
+    },
+    "outputs": {
+      "items": {
+        "$ref": "#/$defs/OutputField"
+      },
+      "title": "Outputs",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "recoveries": {
+      "items": {
+        "$ref": "#/$defs/Recovery"
+      },
+      "title": "Recoveries",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    },
+    "version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "capability_id",
+    "version",
+    "description",
+    "app",
+    "steps",
+    "checkpoints",
+    "provenance"
+  ],
+  "title": "Artifact",
+  "type": "object"
+}

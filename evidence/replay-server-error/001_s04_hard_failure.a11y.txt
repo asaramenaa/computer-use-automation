@@ -1,0 +1,29 @@
+url: http://127.0.0.1:5055/
+title: CORE-SERV Teller Platform
+
+=== frame: (top)  url=http://127.0.0.1:5055/
+- document:
+  - iframe
+  - iframe
+
+=== frame: nav  url=http://127.0.0.1:5055/nav
+- document:
+  - table:
+    - rowgroup:
+      - row "MENU":
+        - cell "MENU"
+      - row "Member Search":
+        - cell "Member Search":
+          - link "Member Search":
+            - /url: /members/search
+      - row "Sign On":
+        - cell "Sign On":
+          - link "Sign On":
+            - /url: /login
+      - row "Sign Off":
+        - cell "Sign Off":
+          - link "Sign Off":
+            - /url: /logout
+
+=== frame: main  url=http://127.0.0.1:5055/members/search
+- document: "HTTP 500 - Internal Server Error An unexpected application error occurred while processing your request. Reference: ERR-198313 Contact the help desk and quote the reference above."

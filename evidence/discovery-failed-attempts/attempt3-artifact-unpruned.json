@@ -1,0 +1,713 @@
+{
+  "schema_version": "1.0",
+  "capability_id": "member_savings_balance_lookup",
+  "version": "1.0.0",
+  "description": "Looks up a member by ID and returns the current savings account balance.",
+  "app": {
+    "vendor": "FictionalVendor",
+    "product": "CORE-SERV Teller Platform",
+    "version": "7.2",
+    "tenant": null,
+    "entry_url": "http://127.0.0.1:5055/"
+  },
+  "inputs": [
+    {
+      "name": "member_id",
+      "type": "string",
+      "description": "Value typed at 'Member Number' (from the goal).",
+      "required": true,
+      "sensitive": false,
+      "pattern": "^\\d+$",
+      "example": "10023"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "savings_balance",
+      "type": "number",
+      "description": "Read the savings account balance for member 10023",
+      "format": "money_usd"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s01",
+      "label": "Open the application",
+      "action": "navigate",
+      "locators": [],
+      "value": {
+        "kind": "literal",
+        "value": "http://127.0.0.1:5055/",
+        "name": null
+      },
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": {
+        "kind": "text_present",
+        "frame": "nav",
+        "text": "MENU",
+        "pattern": null,
+        "locator": null,
+        "description": "'MENU' visible after navigate"
+      },
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "entry point"
+    },
+    {
+      "id": "s02",
+      "label": "Enter value in 'User ID'",
+      "action": "type",
+      "locators": [
+        {
+          "strategy": "anchor",
+          "frame": "main",
+          "role": "textbox",
+          "name": null,
+          "exact": true,
+          "anchor_text": "User ID",
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Control has no accessible name; the nearest preceding visible text 'User ID' is the label cell, stable in table-based forms."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 220.5,
+          "y": 77.8,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": {
+        "kind": "secret",
+        "value": null,
+        "name": "TARGET_APP_USER"
+      },
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": null,
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Enter operator user ID to sign on"
+    },
+    {
+      "id": "s03",
+      "label": "Click 'Sign On'",
+      "action": "click",
+      "locators": [
+        {
+          "strategy": "role_name",
+          "frame": "main",
+          "role": "button",
+          "name": "Sign On",
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Accessible name 'Sign On' on a button: what an operator reads; survives layout and markup changes."
+        },
+        {
+          "strategy": "text",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": "Sign On",
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Visible text fallback if role mapping differs on another version or surface."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 392.9,
+          "y": 140.8,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": null,
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": {
+        "kind": "text_present",
+        "frame": "main",
+        "text": "Invalid User ID or Password. (SEC-401)",
+        "pattern": null,
+        "locator": null,
+        "description": "'Invalid User ID or Password. (SEC-401)' visible after click"
+      },
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Submit login to access member search"
+    },
+    {
+      "id": "s04",
+      "label": "Enter value in 'Password'",
+      "action": "type",
+      "locators": [
+        {
+          "strategy": "anchor",
+          "frame": "main",
+          "role": "textbox",
+          "name": null,
+          "exact": true,
+          "anchor_text": "Password",
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Control has no accessible name; the nearest preceding visible text 'Password' is the label cell, stable in table-based forms."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 220.5,
+          "y": 137.8,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": {
+        "kind": "secret",
+        "value": null,
+        "name": "TARGET_APP_PASSWORD"
+      },
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": null,
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Enter operator password to sign on"
+    },
+    {
+      "id": "s05",
+      "label": "Enter value in 'User ID'",
+      "action": "type",
+      "locators": [
+        {
+          "strategy": "anchor",
+          "frame": "main",
+          "role": "textbox",
+          "name": null,
+          "exact": true,
+          "anchor_text": "User ID",
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Control has no accessible name; the nearest preceding visible text 'User ID' is the label cell, stable in table-based forms."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 220.5,
+          "y": 106.2,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": {
+        "kind": "secret",
+        "value": null,
+        "name": "TARGET_APP_USER"
+      },
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": null,
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Enter operator user ID for login"
+    },
+    {
+      "id": "s06",
+      "label": "Enter value in 'User ID'",
+      "action": "type",
+      "locators": [
+        {
+          "strategy": "anchor",
+          "frame": "main",
+          "role": "textbox",
+          "name": null,
+          "exact": true,
+          "anchor_text": "User ID",
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Control has no accessible name; the nearest preceding visible text 'User ID' is the label cell, stable in table-based forms."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 220.5,
+          "y": 106.2,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": {
+        "kind": "secret",
+        "value": null,
+        "name": "TARGET_APP_USER"
+      },
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": null,
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Re-enter user ID for login"
+    },
+    {
+      "id": "s07",
+      "label": "Enter value in 'User ID'",
+      "action": "type",
+      "locators": [
+        {
+          "strategy": "anchor",
+          "frame": "main",
+          "role": "textbox",
+          "name": null,
+          "exact": true,
+          "anchor_text": "User ID",
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Control has no accessible name; the nearest preceding visible text 'User ID' is the label cell, stable in table-based forms."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 220.5,
+          "y": 106.2,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": {
+        "kind": "secret",
+        "value": null,
+        "name": "TARGET_APP_USER"
+      },
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": null,
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Enter correct operator user ID for login"
+    },
+    {
+      "id": "s08",
+      "label": "Click 'Sign On'",
+      "action": "click",
+      "locators": [
+        {
+          "strategy": "role_name",
+          "frame": "main",
+          "role": "button",
+          "name": "Sign On",
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Accessible name 'Sign On' on a button: what an operator reads; survives layout and markup changes."
+        },
+        {
+          "strategy": "text",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": "Sign On",
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Visible text fallback if role mapping differs on another version or surface."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 392.9,
+          "y": 169.2,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": null,
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": {
+        "kind": "text_present",
+        "frame": "main",
+        "text": "Member Search",
+        "pattern": null,
+        "locator": null,
+        "description": "'Member Search' visible after click"
+      },
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Submit login with correct credentials"
+    },
+    {
+      "id": "s09",
+      "label": "Enter value in 'Member Number'",
+      "action": "type",
+      "locators": [
+        {
+          "strategy": "anchor",
+          "frame": "main",
+          "role": "textbox",
+          "name": null,
+          "exact": true,
+          "anchor_text": "Member Number",
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Control has no accessible name; the nearest preceding visible text 'Member Number' is the label cell, stable in table-based forms."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 227.0,
+          "y": 77.8,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": {
+        "kind": "param",
+        "value": null,
+        "name": "member_id"
+      },
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": null,
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Enter member ID to search for member details"
+    },
+    {
+      "id": "s10",
+      "label": "Click 'Search'",
+      "action": "click",
+      "locators": [
+        {
+          "strategy": "role_name",
+          "frame": "main",
+          "role": "button",
+          "name": "Search",
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Accessible name 'Search' on a button: what an operator reads; survives layout and markup changes."
+        },
+        {
+          "strategy": "text",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": "Search",
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "Visible text fallback if role mapping differs on another version or surface."
+        },
+        {
+          "strategy": "coordinates",
+          "frame": "main",
+          "role": null,
+          "name": null,
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": 398.1,
+          "y": 77.8,
+          "viewport": [
+            1280,
+            800
+          ],
+          "rationale": "Last resort; only valid at the recorded viewport and refused otherwise."
+        }
+      ],
+      "value": null,
+      "risk_class": "reversible",
+      "precondition": null,
+      "postcondition": {
+        "kind": "text_present",
+        "frame": "main",
+        "text": "Member Profile",
+        "pattern": null,
+        "locator": null,
+        "description": "'Member Profile' visible after click"
+      },
+      "timeout_ms": 10000,
+      "extract": null,
+      "notes": "Submit member search to view member details"
+    },
+    {
+      "id": "s11",
+      "label": "Read savings_balance",
+      "action": "extract",
+      "locators": [],
+      "value": null,
+      "risk_class": "read",
+      "precondition": null,
+      "postcondition": null,
+      "timeout_ms": 10000,
+      "extract": {
+        "output": "savings_balance",
+        "strategy": "table_cell",
+        "frame": "main",
+        "row_anchor": "S-01",
+        "column_header": "Balance",
+        "label": null,
+        "locator": null,
+        "pattern": null,
+        "parse": "money"
+      },
+      "notes": "Read the savings account balance for member 10023"
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "cp01",
+      "after_step": "s11",
+      "condition": {
+        "kind": "text_present",
+        "frame": "main",
+        "text": "Member Profile",
+        "pattern": null,
+        "locator": null,
+        "description": "'Member Profile' visible after click"
+      },
+      "description": "Goal state reached: 'Member Profile' visible after click"
+    }
+  ],
+  "outcome_detectors": [
+    {
+      "code": "MEMBER_NOT_FOUND",
+      "description": "No member matches the supplied member number.",
+      "condition": {
+        "kind": "text_present",
+        "frame": null,
+        "text": "No member found",
+        "pattern": null,
+        "locator": null,
+        "description": ""
+      },
+      "after_steps": null
+    },
+    {
+      "code": "PERMISSION_DENIED",
+      "description": "The operator role does not permit this operation (SEC-403).",
+      "condition": {
+        "kind": "text_present",
+        "frame": null,
+        "text": "SEC-403",
+        "pattern": null,
+        "locator": null,
+        "description": ""
+      },
+      "after_steps": null
+    },
+    {
+      "code": "VALIDATION_ERROR",
+      "description": "The application rejected the submitted form values.",
+      "condition": {
+        "kind": "text_present",
+        "frame": null,
+        "text": "ERROR:",
+        "pattern": null,
+        "locator": null,
+        "description": ""
+      },
+      "after_steps": null
+    },
+    {
+      "code": "INVALID_CREDENTIALS",
+      "description": "Sign-on was rejected (SEC-401); the configured credentials are wrong.",
+      "condition": {
+        "kind": "text_present",
+        "frame": null,
+        "text": "SEC-401",
+        "pattern": null,
+        "locator": null,
+        "description": ""
+      },
+      "after_steps": null
+    }
+  ],
+  "recoveries": [
+    {
+      "id": "r01",
+      "description": "Dismiss the maintenance system notice overlay",
+      "trigger": {
+        "kind": "text_present",
+        "frame": null,
+        "text": "SYSTEM NOTICE",
+        "pattern": null,
+        "locator": null,
+        "description": ""
+      },
+      "action": "dismiss",
+      "locators": [
+        {
+          "strategy": "role_name",
+          "frame": "main",
+          "role": "button",
+          "name": "Continue",
+          "exact": true,
+          "anchor_text": null,
+          "text": null,
+          "x": null,
+          "y": null,
+          "viewport": null,
+          "rationale": "The overlay's only control; name is stable product chrome."
+        }
+      ],
+      "goto_step": null,
+      "max_attempts": 2,
+      "backoff_ms": 1000
+    },
+    {
+      "id": "r02",
+      "description": "Session expired (SEC-440); sign on again and continue",
+      "trigger": {
+        "kind": "text_present",
+        "frame": null,
+        "text": "SEC-440",
+        "pattern": null,
+        "locator": null,
+        "description": ""
+      },
+      "action": "reauth",
+      "locators": [],
+      "goto_step": "s01",
+      "max_attempts": 1,
+      "backoff_ms": 1000
+    },
+    {
+      "id": "r03",
+      "description": "Transient HTTP 500; retry from the last verified state",
+      "trigger": {
+        "kind": "text_present",
+        "frame": null,
+        "text": "HTTP 500",
+        "pattern": null,
+        "locator": null,
+        "description": ""
+      },
+      "action": "retry",
+      "locators": [],
+      "goto_step": null,
+      "max_attempts": 2,
+      "backoff_ms": 1500
+    },
+    {
+      "id": "r04",
+      "description": "Accept the product's unsaved-changes confirm dialog",
+      "trigger": {
+        "kind": "dialog_open",
+        "frame": null,
+        "text": null,
+        "pattern": "Unsaved changes",
+        "locator": null,
+        "description": ""
+      },
+      "action": "accept_dialog",
+      "locators": [],
+      "goto_step": null,
+      "max_attempts": 3,
+      "backoff_ms": 1000
+    }
+  ],
+  "provenance": {
+    "recorded_at": "2026-09-18T01:02:01.104942Z",
+    "model": "groq:openai/gpt-oss-120b",
+    "run_id": "discover-real",
+    "surface": "playwright-chromium",
+    "goal": "Look up member 10023 and read the current savings balance",
+    "discovery_steps": 11
+  }
+}

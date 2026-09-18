@@ -1,0 +1,18 @@
+run replay-success: replaying member_savings_balance_lookup@1.0.0 params={'member_id': '10047'}  log=/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-success/events.jsonl
+{
+  "status": "SUCCESS",
+  "run_id": "replay-success",
+  "capability_id": "member_savings_balance_lookup",
+  "version": "1.0.0",
+  "started_at": "2026-09-18T09:09:58.009818Z",
+  "finished_at": "2026-09-18T09:09:58.567102Z",
+  "steps_completed": 7,
+  "outputs": {
+    "savings_balance": 9800.0
+  },
+  "outcome": null,
+  "failure": null,
+  "escalation": null,
+  "recoveries_applied": [],
+  "evidence_dir": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/replay-success"
+}

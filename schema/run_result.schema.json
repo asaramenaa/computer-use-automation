@@ -1,0 +1,286 @@
+{
+  "$defs": {
+    "Escalation": {
+      "additionalProperties": false,
+      "properties": {
+        "intervention_id": {
+          "title": "Intervention Id",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "request_path": {
+          "title": "Request Path",
+          "type": "string"
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Step Id"
+        }
+      },
+      "required": [
+        "intervention_id",
+        "step_id",
+        "reason",
+        "request_path"
+      ],
+      "title": "Escalation",
+      "type": "object"
+    },
+    "EvidenceRefs": {
+      "additionalProperties": false,
+      "properties": {
+        "a11y_snapshot": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "A11Y Snapshot"
+        },
+        "log": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Log"
+        },
+        "screenshot": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Screenshot"
+        }
+      },
+      "title": "EvidenceRefs",
+      "type": "object"
+    },
+    "Failure": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/EvidenceRefs"
+        },
+        "expected": {
+          "title": "Expected",
+          "type": "string"
+        },
+        "observed": {
+          "title": "Observed",
+          "type": "string"
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Step Id"
+        },
+        "step_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Step Label"
+        }
+      },
+      "required": [
+        "step_id",
+        "step_label",
+        "expected",
+        "observed"
+      ],
+      "title": "Failure",
+      "type": "object"
+    },
+    "Outcome": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "description",
+        "step_id"
+      ],
+      "title": "Outcome",
+      "type": "object"
+    },
+    "RecoveryApplied": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt": {
+          "title": "Attempt",
+          "type": "integer"
+        },
+        "recovery_id": {
+          "title": "Recovery Id",
+          "type": "string"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        },
+        "trigger": {
+          "title": "Trigger",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recovery_id",
+        "step_id",
+        "attempt",
+        "trigger"
+      ],
+      "title": "RecoveryApplied",
+      "type": "object"
+    },
+    "RunStatus": {
+      "enum": [
+        "SUCCESS",
+        "BUSINESS_OUTCOME",
+        "FAILED",
+        "ESCALATED"
+      ],
+      "title": "RunStatus",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "capability_id": {
+      "title": "Capability Id",
+      "type": "string"
+    },
+    "escalation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Escalation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence_dir": {
+      "title": "Evidence Dir",
+      "type": "string"
+    },
+    "failure": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Failure"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "finished_at": {
+      "format": "date-time",
+      "title": "Finished At",
+      "type": "string"
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Outcome"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "outputs": {
+      "additionalProperties": true,
+      "title": "Outputs",
+      "type": "object"
+    },
+    "recoveries_applied": {
+      "items": {
+        "$ref": "#/$defs/RecoveryApplied"
+      },
+      "title": "Recoveries Applied",
+      "type": "array"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/RunStatus"
+    },
+    "steps_completed": {
+      "default": 0,
+      "title": "Steps Completed",
+      "type": "integer"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "run_id",
+    "capability_id",
+    "version",
+    "started_at",
+    "finished_at",
+    "evidence_dir"
+  ],
+  "title": "RunResult",
+  "type": "object"
+}

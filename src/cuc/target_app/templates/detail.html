@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block body %}
+<table border="1" cellpadding="4" cellspacing="0" width="560" bgcolor="#ffffff">
+<tr><td colspan="2" bgcolor="#dde4ee"><b>Member Profile</b></td></tr>
+<tr><td width="140">Member Number</td><td>{{ member.number }}</td></tr>
+<tr><td>Name</td><td>{{ member.name }}</td></tr>
+<tr><td>Status</td><td>{{ member.status }}</td></tr>
+<tr><td>SSN</td><td>{{ member.masked_ssn }}</td></tr>
+<tr><td colspan="2">
+  <table border="1" cellpadding="3" cellspacing="0" width="100%">
+  <tr bgcolor="#eeeeee"><td><b>Suffix</b></td><td><b>Product</b></td><td><b>Account Number</b></td><td align="right"><b>Balance</b></td></tr>
+  {% for a in member.accounts %}
+  <tr><td>{{ a.suffix }}</td><td>{{ a.product }}{% if a.nickname %} ({{ a.nickname }}){% endif %}</td><td>{{ a.number }}</td><td align="right">{{ a.balance }}</td></tr>
+  {% endfor %}
+  </table>
+</td></tr>
+<tr><td colspan="2" align="right">
+  <a href="/members/search">Back to Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="/members/{{ member.number }}/subaccount">Open Sub-Account</a>
+</td></tr>
+</table>
+{% endblock %}

@@ -1,0 +1,17 @@
+{
+  "intervention_id": "int-d9dde425",
+  "run_id": "handoff-demo",
+  "kind": "stuck",
+  "capability_id": "member_savings_balance_lookup",
+  "description": "Given a member ID, returns the member's savings account balance.",
+  "step_id": "s04",
+  "step_label": "Click 'Sign On'",
+  "reason": "recovery r03 (Transient HTTP 500; retry from the last verified state) within 2 attempts; observed: trigger still present after 2 attempts: url=http://127.0.0.1:5055/; nav: MENU Member Search Sign On Sign Off | main: HTTP 500 - Internal Server Error An unexpected application error occurred while processing your request. Reference: ERR-390158 Contact the help desk and quote the reference above.",
+  "current_url": "http://127.0.0.1:5055/",
+  "screenshot": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/handoff-demo/evidence/001_s04_hard_failure.png",
+  "a11y_snapshot": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/handoff-demo/evidence/001_s04_hard_failure.a11y.txt",
+  "log": "/Users/amena/Desktop/PROJECTS/cuc-automation/runs/handoff-demo/events.jsonl",
+  "steps_completed": 3,
+  "created_at": "2026-09-18T13:09:28.238887+00:00",
+  "how_to_resume": "The live browser window is now yours. Perform the manual step(s), then signal:\n  cuc resume --run-id handoff-demo --decision resumed   # you fixed it; automation re-verifies and continues\n  cuc resume --run-id handoff-demo --decision confirmed # (irreversible step) go ahead and perform it\n  cuc resume --run-id handoff-demo --decision abandoned # stop the run"
+}

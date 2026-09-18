@@ -1,0 +1,23 @@
+# Allowlist and risk policy for the automation. Fail closed: anything not listed is denied.
+version: 1
+allow:
+  origins:
+    - "http://127.0.0.1:5055"
+    - "http://localhost:5055"
+  routes:                      # glob on path: * = one segment, ** = any depth
+    - "/"
+    - "/nav"
+    - "/login"
+    - "/logout"
+    - "/members/**"
+  actions: [navigate, click, type, select, press, extract]
+deny:
+  routes:
+    - "/admin/**"              # fault-injection harness is never an agent target
+risk:
+  irreversible_mode: require_human   # block | require_human
+  # Controls whose accessible name matches are irreversible unless the artifact says otherwise.
+  irreversible_control_patterns:
+    - "(?i)^(open account|submit|confirm|post|transfer|approve|delete|remove|close account|apply)\\b"
+redaction:
+  sensitive_keys: [password, pwd, passwd, secret, token, api_key, apikey, authorization, cookie, ssn, pin, uid, username, user_id]
