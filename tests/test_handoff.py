@@ -1,5 +1,4 @@
 import json
-import threading
 
 import pytest
 
@@ -7,9 +6,9 @@ from cuc.handoff import CliEscalationHandler, HandoffMachine, HandoffState, Ille
 from cuc.observability import RunLog
 from cuc.policy import Redactor
 from cuc.replay.executor import InterventionContext
-from cuc.schema import ActionType, EvidenceRefs
+from cuc.schema import EvidenceRefs
 from conftest import login_via_surface
-from fixtures import loc_anchor, loc_role, text_present
+from fixtures import text_present
 
 
 def test_state_machine_transitions_and_lease_persistence(tmp_path):

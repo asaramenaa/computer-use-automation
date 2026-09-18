@@ -1,15 +1,14 @@
-"""Locator resolution over a Playwright page.
+"""Locator resolution over a Playwright page, in the artifact's order.
 
-Order is fixed by the artifact: ROLE_NAME -> ANCHOR -> TEXT -> COORDINATES.
-A strategy that yields more than one match is a failure for that strategy,
-never a guess; the next strategy is tried and every attempt is reported.
+A strategy that yields anything but exactly one match fails for that strategy; the next
+one is tried and every attempt is reported. Never a guess.
 """
 from __future__ import annotations
 
 import uuid
 from typing import Any
 
-from playwright.sync_api import Frame, Page
+from playwright.sync_api import Error as PWError, Frame, Page
 
 from cuc.schema import Locator, LocatorStrategy
 
@@ -39,23 +38,23 @@ def ensure_helpers(frame: Frame) -> None:
     frame.evaluate(CUC_JS)
 
 
-def _try_one(page: Page, loc: Locator) -> tuple[Resolved | None, dict[str, Any]]:
-    """Return (resolved, attempt_record). resolved is None when not exactly one match."""
+def _resolve_one(page: Page, loc: Locator) -> tuple[Resolved | None, dict[str, Any]]:
+    """Try one locator; resolved is None unless exactly one control matched."""
     attempt: dict[str, Any] = {"strategy": loc.strategy.value, "frame": loc.frame}
     frame = find_frame(page, loc.frame)
     if loc.strategy is LocatorStrategy.ROLE_NAME:
-        pl = frame.get_by_role(loc.role, name=loc.name, exact=loc.exact)  # type: ignore[arg-type]
+        candidates = frame.get_by_role(loc.role, name=loc.name, exact=loc.exact)  # type: ignore[arg-type]
         attempt.update(role=loc.role, name=loc.name)
     elif loc.strategy is LocatorStrategy.ANCHOR:
         ensure_helpers(frame)
         token = uuid.uuid4().hex
         n = frame.evaluate("([r, a, t]) => window.__cuc.markByAnchor(r, a, t)", [loc.role, loc.anchor_text, token])
-        pl = frame.locator(f'[data-cuc-match="{token}"]')
+        candidates = frame.locator(f'[data-cuc-match="{token}"]')
         attempt.update(role=loc.role, anchor=loc.anchor_text, marked=n)
     elif loc.strategy is LocatorStrategy.TEXT:
-        pl = frame.get_by_text(loc.text, exact=loc.exact)  # type: ignore[arg-type]
+        candidates = frame.get_by_text(loc.text, exact=loc.exact)  # type: ignore[arg-type]
         attempt.update(text=loc.text)
-    else:  # COORDINATES: translate frame-relative point to page coordinates
+    else:  # COORDINATES: frame-relative point to page coordinates
         offset = (0.0, 0.0)
         fe = frame.frame_element() if frame.parent_frame is not None else None
         if fe is not None:
@@ -70,21 +69,21 @@ def _try_one(page: Page, loc: Locator) -> tuple[Resolved | None, dict[str, Any]]
         attempt["matches"] = 1
         return Resolved(loc.strategy, loc.frame, f"point({loc.x},{loc.y}) in {loc.frame or 'top'}",
                         point=(offset[0] + float(loc.x), offset[1] + float(loc.y))), attempt
-    count = pl.count()
+    count = candidates.count()
     attempt["matches"] = count
     if count != 1:
         if loc.strategy is LocatorStrategy.ANCHOR:
             frame.evaluate("() => window.__cuc.unmark()")
         return None, attempt
     desc = f"{loc.strategy.value}:{loc.role or ''}:{loc.name or loc.anchor_text or loc.text}"
-    return Resolved(loc.strategy, loc.frame, desc, handle=pl), attempt
+    return Resolved(loc.strategy, loc.frame, desc, handle=candidates), attempt
 
 
 def resolve(page: Page, locators: list[Locator]) -> tuple[Resolved, list[dict[str, Any]]]:
     attempts: list[dict[str, Any]] = []
     for loc in locators:
         try:
-            resolved, attempt = _try_one(page, loc)
+            resolved, attempt = _resolve_one(page, loc)
         except LocatorError as e:
             attempts.append({"strategy": loc.strategy.value, "frame": loc.frame, "error": str(e)})
             continue
@@ -102,5 +101,5 @@ def release(page: Page, resolved: Resolved) -> None:
     if resolved.strategy is LocatorStrategy.ANCHOR:
         try:
             find_frame(page, resolved.frame).evaluate("() => window.__cuc && window.__cuc.unmark()")
-        except Exception:  # frame navigated away; markers are gone with the document
+        except PWError:  # frame navigated away; markers are gone with the document
             pass

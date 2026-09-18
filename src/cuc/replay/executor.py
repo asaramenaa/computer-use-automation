@@ -1,10 +1,8 @@
-"""Deterministic replay engine.
+"""Deterministic replay engine: walk an artifact's steps with no model in the loop.
 
-Given an artifact and typed params, walk the steps with no model in the loop.
-After each step classify the observed state: business outcome -> recoverable ->
-postcondition -> hard failure. Recoveries are bounded. Irreversible steps are
-gated by policy and need a human decision. Hard failures capture evidence and,
-when an escalation handler is attached, hand the live session to a human.
+After each step the observed state is classified business outcome -> recoverable ->
+postcondition -> hard failure. Recoveries are bounded; irreversible steps need a human
+decision; hard failures capture evidence and, with a handler attached, hand the session over.
 """
 from __future__ import annotations
 
@@ -18,12 +16,12 @@ from cuc.observability import RunLog, capture
 from cuc.policy import Policy, SecretRef, SecretStore
 from cuc.schema import (
     ActionType, Artifact, Escalation, EvidenceRefs, Failure, Outcome, Recovery, RecoveryAction, RecoveryApplied,
-    RiskClass, RunResult, RunStatus, Step, ValueRef,
+    RunResult, RunStatus, Step, ValueRef,
 )
 from cuc.surface.base import LocatorError, Surface, SurfaceError
 from cuc.surface.playwright_surface import parse_value
 
-from .detectors import Classification, classify
+from .detectors import classify
 
 
 @dataclass
@@ -104,8 +102,7 @@ class ReplayEngine:
             try:
                 i, skip_action = self._step(artifact, params, step, i, skip_action)
             except _HardFailure as hf:
-                # Every hard failure (locator miss, postcondition, checkpoint, exhausted recovery) goes through
-                # one path: evidence, then the escalation seam if a handler is attached.
+                # One path for every hard failure: evidence, then the escalation seam if a handler is attached.
                 i, skip_action = self._hard_failure(step, i, hf.expected, hf.observed)
 
     def _step(self, artifact: Artifact, params: dict[str, Any], step: Step, i: int, skip_action: bool) -> tuple[int, bool]:
@@ -126,7 +123,6 @@ class ReplayEngine:
                     except (LocatorError, SurfaceError) as e:
                         action_error = str(e)
                         self.log.event("action_failed", step_id=step.id, error=action_error, attempts=getattr(e, "attempts", None))
-        # classify: outcome -> recoverable -> postcondition -> hard failure
         wait_ms = 0 if action_error else step.timeout_ms
         c = classify(self.surface, artifact, step, None if action_error else step.postcondition, wait_ms)
         self.log.event("step_classified", step_id=step.id, classification=c.kind,
@@ -165,7 +161,6 @@ class ReplayEngine:
         if res.decision == "confirmed":
             return
         if res.decision == "resumed" and step.postcondition is not None and self.surface.check(step.postcondition):
-            # The human performed the irreversible step themselves.
             self.log.event("step_completed_by_human", step_id=step.id)
             raise _SkipStep()
         raise _Stop(self._escalated(step, res, g.reason))
@@ -219,7 +214,7 @@ class ReplayEngine:
             return i, not action_failed  # re-act only if the original action never happened
         if r.action is RecoveryAction.REAUTH:
             return self.artifact.step_index(r.goto_step or step.id), False
-        # RETRY: rewind to the last verified state, then re-run from there.
+        # RETRY rewinds to the last verified state so form values are re-entered, not re-clicked on a dead page.
         self._backoff(r.backoff_ms)
         anchor = next((j for j in range(i - 1, -1, -1) if steps[j].postcondition is not None), None)
         if step.action is not ActionType.NAVIGATE:
@@ -242,8 +237,7 @@ class ReplayEngine:
         res = self._escalate(step, f"{expected}; observed: {observed}", "stuck", evidence)
         if res.decision == "abandoned":
             raise _Stop(self._escalated(step, res, expected))
-        # Resume: re-verify before continuing on the same session. A human often completes more than the
-        # failed step, so find the furthest step whose postcondition now holds and continue after it.
+        # A human often completes more than the failed step: continue after the furthest step whose postcondition holds.
         steps = self.artifact.steps
         for j in range(len(steps) - 1, i - 1, -1):
             pc = steps[j].postcondition
@@ -285,8 +279,7 @@ class ReplayEngine:
 
     @staticmethod
     def _backoff(ms: int) -> None:
-        # Retry backoff for transient server errors. This is the one time-based wait in replay and it is
-        # not used for UI synchronization (those are condition polls).
+        # The one time-based wait in replay: retry backoff, never UI synchronization (those are condition polls).
         if ms > 0:
             time.sleep(ms / 1000)
 

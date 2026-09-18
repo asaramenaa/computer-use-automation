@@ -1,8 +1,8 @@
 """Capture what the human does in the live browser while they hold the lease.
 
-Surface-specific by nature (a desktop surface would hook OS input). Records
-clicks (role/name/anchor of the target), field changes (field identity and
-value length only, never the value), and frame navigations.
+Surface-specific by nature (a desktop surface would hook OS input). Records clicks
+(role/name of the target), field changes (identity and value length only, never the
+value), submits and frame navigations.
 """
 from __future__ import annotations
 
@@ -10,7 +10,6 @@ from typing import Any, Callable
 
 from playwright.sync_api import Error as PWError, Frame, Page
 
-from cuc.surface.a11y import CUC_JS
 from cuc.surface.locators import frame_path
 
 _LISTENER_JS = r"""
@@ -25,8 +24,6 @@ _LISTENER_JS = r"""
     let role = tag === 'a' ? 'link' : tag === 'button' || ['submit','button','reset','image'].includes(type) ? 'button'
              : tag === 'select' ? 'combobox' : tag === 'input' || tag === 'textarea' ? (type === 'checkbox' ? 'checkbox' : type === 'radio' ? 'radio' : 'textbox') : (c.getAttribute('role') || 'generic');
     const name = (c.getAttribute('aria-label') || (['button'].includes(role) ? c.value : '') || (role === 'link' ? c.innerText : '') || '').trim().slice(0, 80);
-    const helper = window.__cuc;
-    const anchor = (!name && helper) ? (function(){ try { const list = helper.controls(); return ''; } catch(e){ return ''; } })() : '';
     return { role, name, tag, type, fieldName: c.getAttribute('name') || '', text: (c.innerText || '').trim().slice(0, 80) };
   };
   document.addEventListener('click', (e) => send({ kind: 'click', target: describe(e.target) }), true);
@@ -75,7 +72,6 @@ class HumanActionRecorder:
 
 def _inject(frame: Frame) -> None:
     try:
-        frame.evaluate(CUC_JS)
         frame.evaluate(_LISTENER_JS)
     except PWError:
         pass

@@ -1,9 +1,8 @@
 """Playwright (Chromium) implementation of the Surface protocol.
 
-Perception: per-frame accessibility tree (Chromium's ARIA snapshot) plus an
-enumeration of interactive controls with role, accessible name and, for
-unnamed controls, the nearest preceding visible text ("anchor"). Screenshots
-are evidence, not perception.
+Perception is the per-frame accessibility tree plus an enumeration of interactive controls
+(role, accessible name, and for unnamed controls the nearest preceding visible text).
+Screenshots are evidence, not perception.
 """
 from __future__ import annotations
 
@@ -15,7 +14,7 @@ from playwright.sync_api import Browser, BrowserContext, Dialog, Error as PWErro
 
 from cuc.schema import ActionType, Condition, ConditionKind, ExtractSpec, ExtractStrategy, Locator
 
-from . import locators as L
+from .locators import find_frame, frame_path, release, resolve as resolve_locators
 from .a11y import CUC_JS
 from .base import Control, DialogEvent, FrameView, LocatorError, Observation, Resolved, SurfaceError
 
@@ -71,7 +70,7 @@ class PlaywrightSurface:
         return [f for f in self.page.frames if not f.is_detached()]
 
     def _frame(self, path: str | None) -> Frame:
-        return L.find_frame(self.page, path)
+        return find_frame(self.page, path)
 
     def _frame_text(self, frame: Frame) -> str:
         try:
@@ -82,7 +81,7 @@ class PlaywrightSurface:
     def observe(self) -> Observation:
         views: list[FrameView] = []
         for frame in self._frames():
-            path = L.frame_path(frame)
+            path = frame_path(frame)
             if frame.url in ("", "about:blank"):
                 continue
             try:
@@ -116,7 +115,7 @@ class PlaywrightSurface:
         last: LocatorError | None = None
         while True:
             try:
-                resolved, _ = L.resolve(self.page, locators)
+                resolved, _ = resolve_locators(self.page, locators)
                 return resolved
             except LocatorError as e:
                 last = e
@@ -141,25 +140,25 @@ class PlaywrightSurface:
                     raise SurfaceError("coordinates support click only")
                 self.page.mouse.click(*target.point)
                 return
-            h = target.handle
+            handle = target.handle
             if action is ActionType.CLICK:
-                h.click(timeout=timeout_ms)
+                handle.click(timeout=timeout_ms)
             elif action is ActionType.TYPE:
-                h.fill(value or "", timeout=timeout_ms)
+                handle.fill(value or "", timeout=timeout_ms)
             elif action is ActionType.SELECT:
                 try:
-                    h.select_option(label=value, timeout=timeout_ms)
+                    handle.select_option(label=value, timeout=timeout_ms)
                 except PWError:
-                    h.select_option(value=value, timeout=timeout_ms)
+                    handle.select_option(value=value, timeout=timeout_ms)
             elif action is ActionType.PRESS:
-                h.press(value or "Enter", timeout=timeout_ms)
+                handle.press(value or "Enter", timeout=timeout_ms)
             else:
                 raise SurfaceError(f"unsupported action {action}")
         except PWError as e:
             raise SurfaceError(f"{action.value} failed: {e.message.splitlines()[0]}") from e
         finally:
             if target is not None:
-                L.release(self.page, target)
+                release(self.page, target)
 
     # ---------------------------------------------------------- conditions
     def check(self, condition: Condition) -> bool:
@@ -179,8 +178,8 @@ class PlaywrightSurface:
             if k in (ConditionKind.ELEMENT_PRESENT, ConditionKind.ELEMENT_ABSENT):
                 assert condition.locator is not None
                 try:
-                    resolved, attempts = L.resolve(self.page, [condition.locator])
-                    L.release(self.page, resolved)
+                    resolved, attempts = resolve_locators(self.page, [condition.locator])
+                    release(self.page, resolved)
                     present = True
                 except LocatorError as e:
                     present = any(a.get("matches", 0) > 0 for a in e.attempts)
@@ -236,13 +235,13 @@ class PlaywrightSurface:
         if s is ExtractStrategy.ELEMENT_TEXT:
             assert spec.locator is not None
             try:
-                resolved, _ = L.resolve(self.page, [spec.locator])
+                resolved, _ = resolve_locators(self.page, [spec.locator])
             except LocatorError:
                 return []
             try:
                 return [resolved.handle.inner_text()]
             finally:
-                L.release(self.page, resolved)
+                release(self.page, resolved)
         frame = self._frame(spec.frame)
         frame.evaluate(CUC_JS)
         if s is ExtractStrategy.TABLE_CELL:
@@ -259,13 +258,13 @@ class PlaywrightSurface:
         return path
 
     def snapshot(self, path: Path) -> Path:
-        """Accessibility snapshot of every frame, as text. The failure-time 'DOM' evidence."""
+        """Accessibility snapshot of every frame as text; the failure-time DOM evidence."""
         path.parent.mkdir(parents=True, exist_ok=True)
         parts = [f"url: {self.page.url}", f"title: {self.page.title()}"]
         for d in self._dialogs:
             parts.append(f"dialog[{d.kind}] {d.handled}: {d.message}")
         for frame in self._frames():
-            parts.append(f"\n=== frame: {L.frame_path(frame) or '(top)'}  url={frame.url}")
+            parts.append(f"\n=== frame: {frame_path(frame) or '(top)'}  url={frame.url}")
             try:
                 parts.append(frame.locator(":root").aria_snapshot(timeout=3000))
             except PWError as e:

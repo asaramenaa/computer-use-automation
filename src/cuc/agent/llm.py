@@ -79,8 +79,8 @@ _ELIDED = "\n[observation elided: superseded by a later one]"
 
 
 def elide(text: str) -> str:
-    """Keep only the first line of a message that carries an observation. Every request re-sends the whole
-    conversation, so only the latest observation is worth its tokens; earlier ones are stale by definition."""
+    """Keep only the first line of a message that carries an observation."""
+    # Every request re-sends the whole conversation; only the latest observation is worth its tokens.
     if "Observation:" in text or "Current observation:" in text:
         return text.split("\n", 1)[0] + _ELIDED
     return text
@@ -118,7 +118,7 @@ class GeminiClient:
         key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         if not key:
             raise LLMError("GEMINI_API_KEY is not set")
-        # SDK retries are disabled: the loop owns backoff so attempts are capped and visible in the log.
+        # SDK retries off: with_backoff owns retries so attempts are capped and logged.
         self._client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=int(REQUEST_TIMEOUT_S * 1000),
                                                                             retry_options=types.HttpRetryOptions(attempts=1)))
         self.model = model
@@ -199,12 +199,12 @@ class GeminiClient:
 
 
 def _retry_after_from(e: Any) -> float | None:
-    # Gemini 429 bodies carry google.rpc.RetryInfo {"retryDelay": "12s"}; use it when present.
+    # Gemini 429 bodies carry google.rpc.RetryInfo {"retryDelay": "12s"}.
     try:
         for d in (e.details or {}).get("error", {}).get("details", []):
             if "retryDelay" in d:
                 return float(str(d["retryDelay"]).rstrip("s")) + 1
-    except Exception:
+    except (AttributeError, KeyError, TypeError, ValueError):
         pass
     return None
 
@@ -217,7 +217,7 @@ class AnthropicClient:
         import anthropic
 
         self._sdk = anthropic
-        # Client resolves ANTHROPIC_API_KEY / auth profile itself. SDK retries off: the loop owns backoff.
+        # Credentials resolve from the environment; SDK retries off, with_backoff owns them.
         self._client = anthropic.Anthropic(max_retries=0, timeout=REQUEST_TIMEOUT_S)
         self.model = model
         self._messages: list[dict[str, Any]] = []
@@ -289,13 +289,12 @@ class GroqClient:
         key = api_key or os.environ.get("GROQ_API_KEY")
         if client is None and not key:
             raise LLMError("GROQ_API_KEY is not set")
-        # SDK retries off: the loop owns backoff so attempts are capped and visible in the log.
         self._client = client or openai.OpenAI(base_url=self.BASE_URL, api_key=key, max_retries=0, timeout=REQUEST_TIMEOUT_S)
         self.model = model
         self._temperature = temperature
         self._messages: list[dict[str, Any]] = []
         self._tools: list[dict[str, Any]] = []
-        # Reasoning models on Groq (gpt-oss) accept reasoning_effort; low keeps per-turn output small on a free tier.
+        # gpt-oss on Groq accepts reasoning_effort; low keeps per-turn output within free-tier limits.
         self._extra: dict[str, Any] = {}
         effort = os.environ.get("LLM_REASONING_EFFORT", "low")
         if effort:
@@ -332,8 +331,7 @@ class GroqClient:
                 if e.status_code >= 500:
                     raise Transient(f"groq {e.status_code}: {getattr(e, 'message', e)}") from e
                 if e.status_code == 400 and _error_code(e) == "tool_use_failed" and corrections["n"] < 2:
-                    # Groq validates tool arguments server-side and rejects the whole turn. Feed the validation
-                    # message back as a user message and retry, at most twice per turn.
+                    # Groq validates tool arguments server-side and rejects the turn; feed the message back, at most twice.
                     corrections["n"] += 1
                     self._messages.append({"role": "user", "content": "Your previous tool call was rejected by argument validation: "
                                            f"{getattr(e, 'message', e)}. Re-issue the call with valid arguments (omit optional fields you do not need)."})
@@ -367,16 +365,16 @@ class GroqClient:
 def _error_code(e: Any) -> str | None:
     try:
         return (e.body or {}).get("error", {}).get("code") or (e.body or {}).get("code")
-    except Exception:
+    except (AttributeError, TypeError):
         return None
 
 
 def _retry_after_header(e: Any) -> float | None:
-    """Groq sends Retry-After (seconds) on 429; honour it, plus a small margin."""
+    """Retry-After header in seconds, plus a one-second margin."""
     try:
         v = e.response.headers.get("retry-after")
         return float(v) + 1 if v else None
-    except Exception:
+    except (AttributeError, TypeError, ValueError):
         return None
 
 

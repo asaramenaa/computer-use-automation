@@ -1,9 +1,8 @@
 """Observe -> decide -> act loop for discovery.
 
-Every model-proposed action passes policy before execution. The loop stops on
-goal met, max steps, wall-clock timeout, dead end (the same action on the same
-observed state repeats), or escalation. It produces a trace, never an artifact;
-the recorder does that.
+Every model-proposed action passes policy before execution. Stops: goal met, max steps,
+timeout, dead end (same action on the same observed state three times), escalation.
+Produces a trace; the recorder turns it into an artifact.
 """
 from __future__ import annotations
 
@@ -14,11 +13,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from cuc.observability import RunLog
+from cuc.observability import RunLog, capture
 from cuc.policy import Policy, SecretRef, SecretStore
 from cuc.replay.executor import EscalationHandler, InterventionContext
-from cuc.schema import ActionType, EvidenceRefs, ExtractSpec, ExtractStrategy, Locator, LocatorStrategy, RiskClass
-from cuc.surface.base import Control, LocatorError, Observation, Resolved, Surface, SurfaceError
+from cuc.schema import ActionType, ExtractSpec, ExtractStrategy, Locator, LocatorStrategy, RiskClass
+from cuc.surface.base import Control, LocatorError, Observation, Surface, SurfaceError
 from cuc.surface.playwright_surface import parse_value
 
 from .llm import LLMClient, LLMError, ToolCall, ToolResult
@@ -191,8 +190,7 @@ class AgentLoop:
         return ToolResult(call.id, name, f"{msg}\n\nObservation:\n{after.to_prompt(max_chars_per_frame=3500)}"), None
 
     def _settle(self, before_hash: str, quiet_ms: int, max_ms: int = 4000) -> Observation:
-        """Observe until the visible state stops changing: a changed state must hold for two samples,
-        an unchanged state is accepted after ``quiet_ms``. Condition-based, no fixed sleep."""
+        """Observe until the state stops changing: a changed state must hold for two samples, an unchanged one for quiet_ms."""
         start = time.monotonic()
         last = self.surface.observe()
         last_hash = last.state_hash()
@@ -283,8 +281,6 @@ class AgentLoop:
         return ToolResult(call.id, "escalate", f"A human operator intervened and handed control back. Continue.\n\nObservation:\n{obs.to_prompt(max_chars_per_frame=3500)}"), None
 
     def _ctx(self, entry: TraceEntry, reason: str, kind: str) -> InterventionContext:
-        from cuc.observability import capture
-
         ev = capture(self.surface, self.run_dir, f"discovery_{kind}", self.log.redactor, self.log.path)
         return InterventionContext(run_id=self.log.run_id, run_dir=self.run_dir, capability_id="(discovery)", description=reason,
                                    step_id=f"step{entry.index}", step_label=f"{entry.tool} {json.dumps(entry.args)[:80]}", reason=reason,

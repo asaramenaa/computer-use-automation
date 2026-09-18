@@ -37,14 +37,13 @@ def applicable_recoveries(artifact: Artifact) -> list[Recovery]:
 
 
 def classify(surface: Surface, artifact: Artifact, step: Step, postcondition: Condition | None, timeout_ms: int) -> Classification:
-    """Wait until the postcondition, a detector or a recovery trigger holds (or timeout), then classify by priority."""
+    """Wait until the postcondition, a detector or a recovery trigger holds, then classify by priority."""
     detectors = applicable_detectors(artifact, step)
     recoveries = applicable_recoveries(artifact)
     watched: list[Condition] = [d.condition for d in detectors] + [r.trigger for r in recoveries]
     if postcondition is not None:
         watched.append(postcondition)
-    # Only wait when there is a postcondition to wait for. Detectors and recovery triggers are
-    # checked immediately after a step with no postcondition; waiting for them would just burn the timeout.
+    # Without a postcondition there is nothing to wait for; detectors are checked once, not polled for the whole timeout.
     if postcondition is not None and watched:
         surface.wait_for_any(watched, timeout_ms)
     c = Classification()

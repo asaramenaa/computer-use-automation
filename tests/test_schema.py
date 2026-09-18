@@ -5,7 +5,7 @@ import pytest
 from pydantic import ValidationError
 
 from cuc.schema import (
-    ActionType, Artifact, Checkpoint, Condition, ConditionKind, InputParam, Locator, LocatorStrategy, Recovery,
+    ActionType, Artifact, InputParam, Locator, LocatorStrategy, Recovery,
     RecoveryAction, RunResult, RunStatus, Step, ValueRef, Failure, Outcome,
 )
 from cuc.schema.export import render

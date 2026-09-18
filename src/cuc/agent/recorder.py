@@ -1,10 +1,8 @@
 """Turn a successful discovery trace into a capability artifact.
 
-What is kept: ordered steps, locator lists with rationale, typed params (literal
-values generalized), typed outputs, postconditions inferred from what appeared
-on screen after each action, a final checkpoint, plus the product profile's
-outcome detectors and recoveries. What is dropped: the model transcript,
-observations, screenshots, and every secret value.
+Kept: steps, locator lists with rationale, typed params and outputs, inferred postconditions,
+a success checkpoint, and the product profile's detectors and recoveries.
+Dropped: the model transcript, observations, screenshots, and every secret value.
 """
 from __future__ import annotations
 
@@ -69,13 +67,9 @@ def _target_key(t: TraceEntry) -> tuple:
 
 
 def prune_trace(actions: list[TraceEntry], profile: AppProfile) -> list[TraceEntry]:
-    """Keep the flow that actually reached the goal.
-
-    1. A failed attempt ends where the page showed a declared terminal business outcome (e.g. SEC-401 after a
-       sign-on with a missing field). Everything up to and including that action is dropped; the entry navigation
-       (index 0) is always kept. The model recovered afterwards, so the recorded flow starts from the recovery.
-    2. Consecutive type/select actions into the same control collapse to the last one (the last value wins).
-    """
+    """Keep only the flow that reached the goal: drop failed attempts, collapse re-typing into the same control."""
+    # A failed attempt ends where the page showed a terminal business outcome (e.g. SEC-401 after a bad sign-on).
+    # Everything up to and including that action is a detour; the entry navigation (index 0) is always kept.
     terminal_texts = [d["condition"]["text"].lower() for d in profile.outcome_detectors
                       if d.get("condition", {}).get("kind", "text_present") == "text_present" and d["condition"].get("text")]
     cut = -1
@@ -100,11 +94,9 @@ _DATA_LIKE = re.compile(r"\d{4,}|\$\s?\d|^[\W\d]+$")
 
 
 def distinctive_text(before: dict[str, str], after: dict[str, str], avoid: set[str], clean=None) -> tuple[str, str | None] | None:
-    """The shortest short line that appeared in a frame after the action and was not there before.
-
-    Heuristic, by design reviewable: headings ("Member Profile") are short and new; data rows and
-    status bars are long or contain digits/values. Lines the redactor would alter are never used.
-    """
+    """Shortest short line that appeared in a frame after the action; a reviewable heuristic for a postcondition."""
+    # Headings ("Member Profile") are short and new; data rows are long, contain digits, or span cells (tabs).
+    # Lines the redactor would alter are never used, so a postcondition can never encode a secret.
     candidates: list[tuple[int, int, str, str | None]] = []
     order = 0
     for frame, text in after.items():
@@ -112,7 +104,6 @@ def distinctive_text(before: dict[str, str], after: dict[str, str], avoid: set[s
         for line in text.splitlines():
             s = " ".join(line.split())
             order += 1
-            # A tab means several cells on one row (label + value): data, not a heading.
             if "\t" in line or not (4 <= len(s) <= 60) or _DATA_LIKE.search(s) or s.lower() in prev:
                 continue
             if any(a and a.lower() in s.lower() for a in avoid):
@@ -190,7 +181,7 @@ def build_artifact(outcome: DiscoveryOutcome, goal: str, target_url: str, profil
         steps.append(Step(id=sid, label=label, action=action, locators=locs, value=value, risk_class=t.risk if not t.human_confirmed else RiskClass.IRREVERSIBLE,
                           postcondition=postcondition, notes=t.reason))
 
-    # Final checkpoint: the last distinctive state observed. Fall back to the last step's postcondition chain.
+    # The success checkpoint is the last distinctive state seen; a url match is the fallback when none was inferred.
     final = next((s.postcondition for s in reversed(steps) if s.postcondition is not None), None)
     last_id = steps[-1].id
     if final is None:

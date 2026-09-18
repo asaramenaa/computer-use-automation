@@ -69,7 +69,6 @@ def test_groq_429_uses_retry_after_header(monkeypatch):
     waits = []
     monkeypatch.setattr(L.time, "sleep", lambda s: waits.append(s))
     monkeypatch.setenv("LLM_MAX_RETRIES", "2")
-    resp = SimpleNamespace(headers={"retry-after": "3"}, status_code=429, request=None)
     err = openai.RateLimitError("rate limited", response=SimpleNamespace(status_code=429, headers={"retry-after": "3"}, request=None), body=None)
     comp = FakeCompletions([err, _reply(content="ok")])
     client = GroqClient("m", client=SimpleNamespace(chat=SimpleNamespace(completions=comp)))

@@ -30,7 +30,7 @@ class HandoffMachine:
     def state(self) -> HandoffState:
         return self.lease.state
 
-    def _go(self, to: HandoffState, holder: Controller, reason: str) -> None:
+    def _transition(self, to: HandoffState, holder: Controller, reason: str) -> None:
         frm = self.lease.state
         if to not in _ALLOWED[frm]:
             raise IllegalTransition(f"{frm.value} -> {to.value} is not allowed")
@@ -44,22 +44,22 @@ class HandoffMachine:
     def pause(self, intervention_id: str, reason: str) -> None:
         self.lease.intervention_id = intervention_id
         self.lease.resume = None
-        self._go(HandoffState.PAUSED, Controller.AUTOMATION, reason)
+        self._transition(HandoffState.PAUSED, Controller.AUTOMATION, reason)
 
     def grant_to_human(self) -> None:
-        self._go(HandoffState.HUMAN, Controller.HUMAN, "lease transferred to human operator")
+        self._transition(HandoffState.HUMAN, Controller.HUMAN, "lease transferred to human operator")
 
     def abandon_before_transfer(self, reason: str) -> None:
-        self._go(HandoffState.AUTOMATION, Controller.AUTOMATION, reason)
+        self._transition(HandoffState.AUTOMATION, Controller.AUTOMATION, reason)
 
     def begin_resume(self) -> None:
-        self._go(HandoffState.RESUMING, Controller.AUTOMATION, "human signalled done; re-verifying state")
+        self._transition(HandoffState.RESUMING, Controller.AUTOMATION, "human signalled done; re-verifying state")
 
     def resume_complete(self) -> None:
-        self._go(HandoffState.AUTOMATION, Controller.AUTOMATION, "automation back in control")
+        self._transition(HandoffState.AUTOMATION, Controller.AUTOMATION, "automation back in control")
 
     def poll_resume(self) -> dict | None:
-        """Re-read the lease file; return the operator's resume signal if present."""
+        """Return the operator's resume signal from the lease file, if any."""
         fresh = self.file.read()
         if fresh and fresh.resume and fresh.state is HandoffState.HUMAN:
             self.lease.resume = fresh.resume

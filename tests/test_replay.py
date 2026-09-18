@@ -7,7 +7,7 @@ import pytest
 from cuc.observability import RunLog
 from cuc.policy import Policy, Redactor, SecretStore
 from cuc.replay import InterventionResult, ReplayEngine
-from cuc.schema import ActionType, Artifact, RiskClass, RunStatus, Step
+from cuc.schema import ActionType, RiskClass, RunStatus, Step
 from fixtures import loc_role, make_artifact, text_present
 
 SECRETS = {"TARGET_APP_USER": "teller1", "TARGET_APP_PASSWORD": "Passw0rd!"}
